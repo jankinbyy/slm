@@ -38,7 +38,7 @@ void ImuProcessor::Predict(const ImuDataPtr last_imu, const ImuDataPtr cur_imu, 
     }
     // Error-state. Not needed.
     Eigen::Vector3d yaw_g_r_i = state->G_R_I.eulerAngles(2, 1, 0);
-    std::cout << "yaw:" << yaw_g_r_i << std::endl;
+    // std::cout << "yaw:" << yaw_g_r_i << std::endl;
     // Covariance of the error-state.
     Eigen::Matrix<double, 15, 15> Fx = Eigen::Matrix<double, 15, 15>::Identity();
     Fx.block<3, 3>(0, 3) = Eigen::Matrix3d::Identity() * delta_t;

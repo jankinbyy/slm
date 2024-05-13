@@ -22,12 +22,27 @@ bool ImuGpsLocalizer::ProcessImuData(const ImuDataPtr imu_data_ptr, State *fused
         initializer_->AddImuData(imu_data_ptr);
         return false;
     }
-    //std::cout << "Predict" << std::endl;
     // Predict.
     imu_processor_->Predict(state_.imu_data_ptr, imu_data_ptr, &state_);
 
     // Convert ENU state to lla.
     ConvertENUToLLA(init_lla_, state_.G_p_I, &(state_.lla));
+    //std::cout << "g pi is:" << state_.G_p_I << std::endl;
+    *fused_state = state_;
+    return true;
+}
+
+bool ImuGpsLocalizer::ProcessImuData(const Eigen::Matrix4d delta_p, const ImuDataPtr imu_data_ptr, State *fused_state) {
+    // Predict.
+    if (!initialized_) {
+        initializer_->AddImuData(imu_data_ptr);
+        return false;
+    }
+    {
+    }
+    // Convert ENU state to lla.
+    ConvertENUToLLA(init_lla_, state_.G_p_I, &(state_.lla));
+    //std::cout << "g pi is:" << state_.G_p_I << std::endl;
     *fused_state = state_;
     return true;
 }
@@ -52,8 +67,9 @@ bool ImuGpsLocalizer::ProcessGpsPositionData(const GpsPositionDataPtr gps_data_p
         //std::cout << "update" << std::endl;
         gps_processor_->UpdateStateByGpsPosition(init_lla_, gps_data_ptr, &state_);
         last_lla = gps_data_ptr->lla[0];
+        return true;
     }
-    return true;
+    return false;
 }
 
 } // namespace ImuGpsLocalization

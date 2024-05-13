@@ -16,8 +16,9 @@ public:
                     const Eigen::Vector3d &I_p_Gps);
 
     bool ProcessImuData(const ImuDataPtr imu_data_ptr, State *fused_state);
-
+    bool ProcessImuData(const Eigen::Matrix4d delta_p, const ImuDataPtr imu_data_ptr, State *fused_state);
     bool ProcessGpsPositionData(const GpsPositionDataPtr gps_data_ptr);
+    State state_;
 
 private:
     std::unique_ptr<Initializer> initializer_;
@@ -26,7 +27,6 @@ private:
 
     bool initialized_;
     Eigen::Vector3d init_lla_; // The initial reference gps point.
-    State state_;
 };
 
 } // namespace ImuGpsLocalization
